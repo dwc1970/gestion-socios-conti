@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Club Constitución</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --negro: #000000; 
+            --oro: #ffd700; 
+            --blanco: #ffffff; 
+            --rojo: #ff4d4d; 
+            --verde: #2ecc71;
+            --gris: #f4f4f4;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--gris); 
+            overflow-x: hidden; 
+        }
+
+        /* --- SPLASH SCREEN --- */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--negro); display: flex; justify-content: center; align-items: center;
+            z-index: 10000; transition: opacity 1.5s ease-in-out, visibility 1.5s;
+        }
+        .splash-logo {
+            width: 425px; height: 425px; object-fit: contain;
+            border-radius: 50%; border: 10px solid var(--oro);
+            filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6));
+            animation: superPulse 2s infinite ease-in-out;
+        }
+        @keyframes superPulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .hidden { opacity: 0 !important; visibility: hidden !important; }
+
+        /* --- SECCIÓN LOGIN --- */
+        #seccionLogin {
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+        }
+        .login-card {
+            background: white; padding: 40px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 350px; border-top: 8px solid var(--negro);
+        }
+        .login-card img { width: 80px; margin-bottom: 15px; }
+        .login-card h2 { margin-bottom: 25px; font-size: 1.2rem; letter-spacing: 1px; }
+        .login-card input { 
+            width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; 
+            border: 1px solid #ddd; box-sizing: border-box; font-size: 1rem;
+        }
+        .btn-entrar { 
+            background: var(--negro); color: var(--oro); border: 2px solid var(--oro); 
+            width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; 
+            cursor: pointer; text-transform: uppercase; transition: 0.3s;
+        }
+
+        /* --- SECCIÓN PANEL --- */
+        #seccionPanel { display: none; }
+        
+        header { 
+            background: var(--negro); color: var(--oro); padding: 30px; 
+            text-align: center; border-bottom: 5px solid var(--oro); 
+            position: relative; 
+        }
+
+        .btn-salir {
+            position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
+            background: var(--oro); color: var(--negro); border: 2px solid var(--negro);
+            padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .container { 
+            max-width: 1200px; margin: 30px auto; background: white; 
+            padding: 30px; border-radius: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.05); 
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #f8f8f8; padding: 15px; text-align: left; color: #666; font-size: 0.9rem; }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        
+        /* Etiquetas de Cuota */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-al-dia { background: #e8f8f0; color: var(--verde); }
+        .status-debe { background: #fff0f0; color: var(--rojo); }
+
+        .img-mini { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--oro); object-fit: cover; }
+        
+        .btn-borrar { background: var(--rojo); color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; }
+        .btn-update { background: #eee; border: none; padding: 8px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <img src="logo2.png" alt="Logo Club" class="splash-logo">
+    </div>
+
+    <div id="seccionLogin">
+        <div class="login-card">
+            <img src="logo2.png" alt="Logo">
+            <h2>ADMINISTRACIÓN</h2>
+            <input type="text" id="userAdmin" placeholder="Usuario">
+            <input type="password" id="passAdmin" placeholder="Contraseña Especial">
+            <button class="btn-entrar" onclick="validarYEntrar()">INGRESAR AL PANEL</button>
+            <br><br>
+            <a href="index.html" style="color: #999; text-decoration: none; font-size: 0.8rem;">Volver al Club</a>
+        </div>
+    </div>
+
+    <div id="seccionPanel">
+        <header>
+            <h1>PANEL DE CONTROL</h1>
+            <p>Club Social y Deportivo Constitución</p>
+            <button class="btn-salir" onclick="cerrarSesion()">
+                <i class="fas fa-power-off"></i> SALIR
+            </button>
+        </header>
+
+        <div class="container">
+            <h2 style="margin-top: 0;">Socios Registrados: <span id="totalSocios" style="color: var(--oro); background: var(--negro); padding: 2px 10px; border-radius: 5px;">0</span></h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>N° Socio</th>
+                        <th>Categoría</th>
+                        <th>Estado Cuota</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpoTabla"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => { document.getElementById('splash').classList.add('hidden'); }, 2000);
+        });
+
+        function validarYEntrar() {
+            const u = document.getElementById('userAdmin').value;
+            const p = document.getElementById('passAdmin').value;
+            if(u === "constitucion" && p === "canario_2026") {
+                document.getElementById('seccionLogin').style.display = 'none';
+                document.getElementById('seccionPanel').style.display = 'block';
+                cargarSocios();
+            } else { alert("Credenciales incorrectas."); }
+        }
+
+        function cargarSocios() {
+            const cuerpo = document.getElementById('cuerpoTabla');
+            cuerpo.innerHTML = '';
+            let contador = 0;
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const clave = localStorage.key(i);
+                if (clave.startsWith('user_')) {
+                    const user = JSON.parse(localStorage.getItem(clave));
+                    // Si no tiene estado definido, por defecto está "Al día"
+                    const estado = user.estadoCuota || "Al día";
+                    const badgeClass = estado === "Al día" ? "status-al-dia" : "status-debe";
+                    
+                    contador++;
+                    cuerpo.innerHTML += `
+                        <tr>
+                            <td><img src="logo2.png" class="img-mini"></td>
+                            <td><strong>${user.nombre.toUpperCase()}</strong></td>
+                            <td>${user.dni}</td>
+                            <td>#${user.nroSocio}</td>
+                            <td>${user.categoria}</td>
+                            <td><span class="status-badge ${badgeClass}">${estado}</span></td>
+                            <td>
+                                <button class="btn-update" title="Cambiar Estado" onclick="cambiarEstado('${user.dni}')">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-borrar" title="Eliminar" onclick="eliminarSocio('${user.dni}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+            document.getElementById('totalSocios').innerText = contador;
+        }
+
+        function cambiarEstado(dni) {
+            const clave = `user_${dni}`;
+            let user = JSON.parse(localStorage.getItem(clave));
+            // Cambia entre los dos estados
+            user.estadoCuota = (user.estadoCuota === "Debe cuota") ? "Al día" : "Debe cuota";
+            localStorage.setItem(clave, JSON.stringify(user));
+            cargarSocios();
+        }
+
+        function eliminarSocio(dni) {
+            if(confirm("¿Eliminar socio?")) {
+                localStorage.removeItem(`user_${dni}`);
+                cargarSocios();
+            }
+        }
+
+        function cerrarSesion() { window.location.href = 'index.html'; }
+    </script>
+</body>
+</html>

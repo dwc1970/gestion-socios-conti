@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Constitución</title>
+    <style>
+        :root { --primario: #000000; --secundario: #ffd700; --blanco: #ffffff; }
+        
+        body { background: #e6e6e6; font-family: Arial, sans-serif; margin: 0; }
+        
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: white; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 0.8s; }
+        .logo-box { background: var(--primario); padding: 25px; border-radius: 20px; border: 4px solid var(--secundario); }
+        .logo-box img { width: 150px; height: 150px; border-radius: 50%; }
+        .fade-out { opacity: 0; visibility: hidden; }
+        
+        header { 
+            background: var(--primario); 
+            color: var(--secundario); 
+            padding: 1.5rem; 
+            text-align: center; 
+            border-bottom: 5px solid var(--secundario);
+            font-size: 1.2rem;
+        }
+        
+        .card { 
+            background: var(--blanco); 
+            padding: 2.5rem; 
+            border-radius: 20px; 
+            width: 380px; 
+            margin: 60px auto; 
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h2 { color: #000; font-weight: bold; margin-bottom: 25px; font-size: 24px; }
+        
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        button { 
+            background: #f1c40f; 
+            color: #000; 
+            padding: 14px; 
+            width: 100%; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        button:hover { background: #dec000; }
+    </style>
+</head>
+<body>
+    <div id="splash-screen"><div class="logo-box"><img src="logo2.png"></div></div>
+    
+    <header><h1>C.S. y D. CONSTITUCIÓN</h1></header>
+    
+    <div class="card">
+        <img src="logo2.png" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px;">
+        <h2>INGRESAR</h2>
+        <form id="logForm">
+            <input type="text" id="dniLog" placeholder="DNI (Usuario)" required>
+            <input type="password" id="passLog" placeholder="Contraseña" required>
+            <button type="submit">INGRESAR</button>
+        </form>
+    </div>
+
+    <script>
+        window.onload = () => setTimeout(() => document.getElementById('splash-screen').classList.add('fade-out'), 800);
+
+        document.getElementById('logForm').onsubmit = e => {
+            e.preventDefault();
+            
+            const dni = document.getElementById('dniLog').value.trim();
+            const passEscrita = document.getElementById('passLog').value.trim();
+
+            const data = localStorage.getItem(`user_${dni}`);
+
+            if (data) {
+                const socio = JSON.parse(data);
+                
+                // CORRECCIÓN: Ahora lee 'pass' que es como lo guarda el registro
+                const passAlmacenada = String(socio.pass).trim();
+
+                if (passAlmacenada === passEscrita) {
+                    localStorage.setItem('sesionActiva', dni);
+                    window.location.href = 'perfil.html';
+                } else {
+                    alert("Datos incorrectos");
+                }
+            } else {
+                alert("Datos incorrectos");
+            }
+        };
+    </script>
+</body>
+</html>

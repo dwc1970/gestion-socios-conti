@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - C.S. y D. Constitución</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --negro: #000000;
+            --oro: #ffd700;
+            --blanco: #ffffff;
+            --gris-claro: #f4f4f4;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gris-claro);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #splash {
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100vw; 
+            height: 100vh;
+            background-color: var(--negro);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s;
+        }
+
+        .splash-logo {
+            width: 425px; 
+            height: 425px;
+            max-width: 80vw; 
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 10px solid var(--oro);
+            filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6));
+            animation: superPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes superPulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        .hidden { 
+            opacity: 0 !important; 
+            visibility: hidden !important; 
+        }
+
+        header {
+            background-color: var(--negro);
+            color: var(--oro);
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--oro);
+        }
+
+        header h1 { margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
+
+        nav {
+            background-color: #1a1a1a;
+            padding: 12px 0;
+            text-align: center;
+        }
+
+        nav a {
+            color: var(--blanco);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        nav a.active {
+            color: var(--oro);
+            border-bottom: 2px solid var(--oro);
+            padding-bottom: 5px;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-card {
+            background-color: var(--blanco);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .logo-card-img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .register-card h2 {
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            color: var(--negro);
+        }
+
+        .mano-animada {
+            color: var(--oro);
+            font-size: 2rem;
+            margin: 10px 0;
+            animation: reboteMano 1.5s infinite;
+        }
+
+        @keyframes reboteMano {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .form-group { margin-bottom: 15px; }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn-finalizar {
+            background-color: var(--negro);
+            color: var(--oro);
+            border: 2px solid var(--oro);
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-finalizar:hover {
+            background-color: #222;
+            transform: scale(1.02);
+        }
+
+        footer { padding: 40px 20px; text-align: center; }
+
+        .btn-admin-link {
+            color: var(--oro);
+            background-color: var(--negro);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 2px solid var(--oro);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-admin-link:hover {
+            background-color: var(--oro);
+            color: var(--negro);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <img src="logo2.png" alt="Logo Club" class="splash-logo">
+    </div>
+
+    <header>
+        <h1>CLUB SOCIAL y DEPORTIVO CONSTITUCIÓN</h1>
+    </header>
+
+    <nav>
+        <a href="index.html" class="active">REGISTRARSE</a>
+        <a href="login.html">INICIAR SESIÓN</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="register-card">
+            <img src="logo2.png" alt="Logo" class="logo-card-img">
+            
+            <h2>
+                <p style="margin: 0; font-size: 1.1rem; color: #555;">HACETE SOCIO</p>
+                <div class="mano-animada">
+                    <i class="fas fa-hand-point-down"></i>
+                </div>
+                <span style="display: block;">Crear Cuenta</span>
+            </h2>
+            
+            <form id="registroForm">
+                <div class="form-group">
+                    <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="dni" placeholder="DNI (Usuario)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="pass" placeholder="Contraseña" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
+                </div>
+                <div class="form-group">
+                    <select id="categoria">
+                        <option value="Socio Activo">Socio Activo</option>
+                        <option value="Socio Cadete">Socio Cadete</option>
+                        <option value="Socio Infantil">Socio Infantil</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-finalizar">FINALIZAR REGISTRO</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <a href="admin.html" class="btn-admin-link">
+            <i class="fas fa-user-shield"></i> PANEL ADMINISTRACIÓN
+        </a>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash');
+                splash.classList.add('hidden');
+            }, 2000); 
+        });
+
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const dni = document.getElementById('dni').value;
+            const pass = document.getElementById('pass').value;
+            const pass2 = document.getElementById('pass2').value;
+            const categoria = document.getElementById('categoria').value;
+
+            if (pass !== pass2) {
+                alert("Las contraseñas no coinciden");
+                return;
+            }
+
+            const nroSocio = Math.floor(Math.random() * 9000) + 1000;
+            
+            // CORRECCIÓN: Usamos 'pass' como nombre de propiedad
+            const nuevoUsuario = { nombre, dni, pass: pass, categoria, nroSocio };
+
+            localStorage.setItem(`user_${dni}`, JSON.stringify(nuevoUsuario));
+            alert("¡Registro exitoso!");
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
