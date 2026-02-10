@@ -2,122 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pasarela de Pagos - C.S. y D. Constitución</title>
+    <title>Pagos - Club Constitución</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --negro: #000000; 
-            --amarillo: #ffd700; 
-            --blanco: #ffffff; 
-            --gris-fondo: #f4f7f6;
-            --azul-mp: #009ee3;
-            --verde-exito: #198754;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-
-        body { background-color: var(--gris-fondo); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-
-        .payment-card {
-            background: var(--blanco);
-            width: 100%;
-            max-width: 450px;
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .header-mp { display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--azul-mp); font-weight: bold; gap: 10px; }
-        
-        .monto-box { background: #f8f9fa; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 25px; border: 1px dashed #cbd5e0; }
-        .monto-box h2 { font-size: 2rem; color: var(--negro); }
-        .monto-box p { color: #666; font-size: 0.9rem; }
-
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-size: 0.85rem; font-weight: 600; color: #444; }
-        .input-group input { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 1rem; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--azul-mp); outline: none; }
-
-        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-        .btn-confirmar {
-            width: 100%; padding: 15px; background: var(--azul-mp); color: white; border: none;
-            border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px;
-            transition: 0.3s;
-        }
-
-        .btn-confirmar:hover { background: #0081ba; transform: translateY(-2px); }
-
-        /* Pantalla de Éxito */
-        .success-screen { text-align: center; }
-        .success-icon { font-size: 4rem; color: var(--verde-exito); margin-bottom: 20px; }
-        .hidden { display: none; }
-
-        .recibo-box {
-            background: #fff; border: 2px solid #eee; border-radius: 15px; padding: 20px;
-            margin-top: 20px; text-align: left; font-size: 0.9rem;
-        }
-        .recibo-item { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #f9f9f9; padding-bottom: 5px; }
-
-        .btn-volver {
-            display: inline-block; margin-top: 25px; color: var(--azul-mp); text-decoration: none; font-weight: 600;
-        }
+        :root { --negro: #000000; --oro: #ffd700; --blanco: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f0f0; margin: 0; padding: 20px; text-align: center; }
+        .payment-card { background: var(--blanco); max-width: 400px; margin: 50px auto; padding: 30px; border-radius: 20px; border-top: 8px solid var(--oro); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .logo-small { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--oro); }
+        .btn-pagar { width: 100%; padding: 15px; background: var(--negro); color: var(--oro); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .recibo { display: none; margin-top: 20px; padding: 15px; border: 2px dashed #333; background: #fff8dc; }
     </style>
 </head>
 <body>
 
-    <div class="payment-card" id="payment-screen">
-        <div class="header-mp">
-            <i class="fas fa-shield-alt"></i>
-            <span>PAGO SEGURO - CLUB CONSTITUCIÓN</span>
-        </div>
-
-        <div class="monto-box">
-            <p>Cuota Social: <span id="periodo-txt"></span></p>
-            <h2>$5.000,00</h2>
-        </div>
-
-        <form id="payForm" onsubmit="event.preventDefault(); procesarPago();">
-            <div class="input-group">
-                <label>Número de Tarjeta</label>
-                <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
-            </div>
-
-            <div class="input-group">
-                <label>Nombre del Titular</label>
-                <input type="text" placeholder="Como figura en la tarjeta" required>
-            </div>
-
-            <div class="row">
-                <div class="input-group">
-                    <label>Vencimiento</label>
-                    <input type="text" placeholder="MM/AA" maxlength="5" required>
-                </div>
-                <div class="input-group">
-                    <label>CVC</label>
-                    <input type="password" placeholder="123" maxlength="3" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-confirmar">CONFIRMAR PAGO</button>
+    <div class="payment-card">
+        <img src="logo2.png" class="logo-small" alt="Logo">
+        <h2>PAGO DE CUOTA</h2>
+        <p>Valor de la cuota: <strong>$5.000</strong></p>
+        
+        <form id="pagoForm">
+            <select id="mesPago" required>
+                <option value="">Seleccionar Mes</option>
+                <option value="Enero">Enero</option>
+                <option value="Febrero">Febrero</option>
+                <option value="Marzo">Marzo</option>
+                <option value="Abril">Abril</option>
+            </select>
+            <input type="text" id="tarjeta" placeholder="Número de Tarjeta (Simulado)" required>
+            <button type="submit" class="btn-pagar">REALIZAR PAGO</button>
         </form>
-    </div>
 
-    <div class="payment-card success-screen hidden" id="success-screen">
-        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-        <h2 style="color: var(--verde-exito)">¡Pago Realizado!</h2>
-        <p>El comprobante ha sido generado con éxito.</p>
-
-        <div class="recibo-box">
-            <div class="recibo-item"><strong>Socio:</strong> <span id="res-nombre">...</span></div>
-            <div class="recibo-item"><strong>Concepto:</strong> <span id="res-mes">...</span></div>
-            <div class="recibo-item"><strong>Fecha:</strong> <span id="res-fecha"></span></div>
-            <div class="recibo-item"><strong>Monto:</strong> <span>$5.000,00</span></div>
-            <div class="recibo-item"><strong>Estado:</strong> <span style="color: green; font-weight: bold;">APROBADO</span></div>
+        <div id="reciboDigital" class="recibo">
+            <h3>✅ PAGO EXITOSO</h3>
+            <p id="detalleRecibo"></p>
+            <button onclick="window.location.href='perfil.html'" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">Volver a mi Perfil</button>
         </div>
-
-        <a href="perfil.html" class="btn-volver">Ir a mi Perfil <i class="fas fa-arrow-right"></i></a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -125,7 +45,37 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        // 1. Obtener el mes desde la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const mesSeleccionado = urlParams.get('mes') || 'Enero';
-        document.getElementById('
+        const dniSocio = localStorage.getItem('sesionActiva');
+        if (!dniSocio) { window.location.href = 'login.html'; }
+
+        document.getElementById('pagoForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const mes = document.getElementById('mesPago').value;
+            
+            try {
+                // 1. Guardar el registro del pago
+                await db.collection("pagos").add({
+                    dni: dniSocio,
+                    mes: mes,
+                    monto: 5000,
+                    fecha: new Date()
+                });
+
+                // 2. Actualizar el estado del socio a "Al día"
+                await db.collection("socios").doc(dniSocio).update({
+                    estadoCuota: "Al día"
+                });
+
+                // 3. Mostrar recibo
+                document.getElementById('pagoForm').style.display = 'none';
+                document.getElementById('reciboDigital').style.display = 'block';
+                document.getElementById('detalleRecibo').innerText = `Recibo para DNI: ${dniSocio}\nMes: ${mes}\nImporte: $5.000`;
+                
+                alert("¡Pago registrado correctamente!");
+            } catch (error) {
+                alert("Error al procesar el pago");
+            }
+        };
+    </script>
+</body>
+</html>
