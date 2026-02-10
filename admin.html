@@ -18,7 +18,6 @@
         :root { --negro: #000000; --oro: #ffd700; --gris: #f4f4f4; --verde: #2ecc71; --rojo: #ff4d4d; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--gris); }
         
-        /* Estilos del Login de Seguridad */
         #loginAdmin {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--negro); color: var(--oro);
@@ -45,7 +44,21 @@
         .btn-accion { border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; color: white; margin: 2px; }
         .btn-borrar { background: var(--rojo); }
         .btn-update { background: #3498db; }
-        .btn-volver { display: inline-block; margin-top: 10px; color: var(--oro); text-decoration: none; font-size: 0.9rem; }
+        
+        .btn-salir { 
+            display: inline-block; 
+            margin-top: 10px; 
+            color: var(--oro); 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            background: none; 
+            border: 1px solid var(--oro); 
+            padding: 5px 15px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-salir:hover { background: var(--oro); color: var(--negro); }
     </style>
 </head>
 <body>
@@ -64,7 +77,9 @@
         <header>
             <img src="logo2.png" alt="Logo" class="admin-logo"><br>
             <h1>ADMINISTRACIÓN CONSTITUCIÓN</h1>
-            <a href="index.html" class="btn-volver"><i class="fas fa-arrow-left"></i> Ir al Inicio</a>
+            <button onclick="cerrarSesionAdmin()" class="btn-salir">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
         </header>
 
         <div class="stats-container">
@@ -100,16 +115,32 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        const CLAVE_ADMIN = "Consti2026";
+        // HASH de la clave "Consti2026"
+        const HASH_ADMIN = "78c43097e937d7a7114e918805f4165506a5122e2e77b494676156e723528825";
 
-        function verificarClave() {
+        // Función para verificar clave mediante comparación de HASH
+        async function verificarClave() {
             const input = document.getElementById('passInput').value;
-            if (input === CLAVE_ADMIN) {
+            
+            // Convertimos lo que el usuario escribió en un hash SHA-256
+            const msgBuffer = new TextEncoder().encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            if (hashHex === HASH_ADMIN) {
                 document.getElementById('loginAdmin').style.display = 'none';
                 document.getElementById('panelContenido').style.display = 'block';
                 cargarSocios();
             } else {
-                alert("Clave incorrecta. Acceso denegado.");
+                alert("Acceso denegado. Clave incorrecta.");
+            }
+        }
+
+        function cerrarSesionAdmin() {
+            if(confirm("¿Deseas salir del panel de administración?")) {
+                localStorage.removeItem('dniSocio');
+                window.location.href = 'index.html';
             }
         }
 
@@ -133,10 +164,10 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')">
+                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')" title="Cambiar Estado">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
-                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')">
+                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')" title="Eliminar Socio">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -161,7 +192,7 @@
         }
 
         async function eliminar(dni, nombre) {
-            if(confirm("¿Seguro que querés eliminar a " + nombre + "?")) { 
+            if(confirm("¿Seguro que querés eliminar a " + nombre + "? Esta acción no se puede deshacer.")) { 
                 await db.collection("socios").doc(dni).delete(); 
             }
         }
