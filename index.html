@@ -25,7 +25,8 @@
         .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .form-card { background: var(--blanco); padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; border-top: 5px solid var(--oro); }
         input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--negro); color: var(--oro); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        button { width: 100%; padding: 15px; background: var(--negro); color: var(--oro); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        .btn-link { display: block; text-align: center; margin-top: 15px; color: var(--negro); text-decoration: none; font-size: 0.9rem; font-weight: bold; }
         footer { background: var(--negro); padding: 15px; text-align: center; }
         .btn-admin-link { color: var(--oro); text-decoration: none; font-size: 0.8rem; }
     </style>
@@ -49,6 +50,7 @@
                 </select>
                 <button type="submit">FINALIZAR REGISTRO</button>
             </form>
+            <a href="login.html" class="btn-link">YA SOY SOCIO - INICIAR SESIÓN</a>
         </div>
     </div>
     <footer><a href="admin.html" class="btn-admin-link"><i class="fas fa-user-shield"></i> PANEL ADMINISTRACIÓN</a></footer>
@@ -57,10 +59,20 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase-config.js"></script>
     <script>
-        // Quitar la pantalla de bienvenida
-        window.onload = () => setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1500);
+        // 1. Lógica del Splash y Autologin
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('hidden');
+                
+                // Verificamos si ya hay un DNI guardado
+                const dniGuardado = localStorage.getItem('dniSocio');
+                if (dniGuardado) {
+                    window.location.href = 'perfil.html';
+                }
+            }, 1500);
+        };
 
-        // Registro de socios
+        // 2. Registro de socios
         document.getElementById('registroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nombre = document.getElementById('nombre').value;
@@ -82,11 +94,15 @@
                     estadoCuota: "Al día", 
                     fechaAlta: new Date()
                 });
+
+                // GUARDAMOS EL DNI EN EL CELULAR
+                localStorage.setItem('dniSocio', dni);
+
                 alert("¡Socio registrado con éxito!"); 
-                window.location.href = 'login.html';
+                window.location.href = 'perfil.html';
             } catch (err) { 
                 console.error(err);
-                alert("Error de conexión. Verificá que el archivo firebase-config.js tenga los datos correctos."); 
+                alert("Error de conexión."); 
             }
         });
     </script>
