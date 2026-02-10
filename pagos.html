@@ -10,6 +10,7 @@
             --negro: #000000;
             --oro: #ffd700;
             --blanco: #ffffff;
+            --gris-claro: #f4f4f4;
         }
 
         body {
@@ -22,8 +23,8 @@
 
         .payment-card {
             background: var(--blanco);
-            max-width: 400px;
-            margin: 50px auto;
+            max-width: 450px; /* Un poco más ancho para las opciones */
+            margin: 30px auto;
             padding: 30px;
             border-radius: 20px;
             border-top: 8px solid var(--oro);
@@ -35,19 +36,76 @@
             height: 80px;
             border-radius: 50%;
             border: 3px solid var(--oro);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
-        /* CORRECCIÓN: Solo aplicar 100% a textos y selects, no a radios */
-        input[type="text"], 
-        input[type="number"], 
-        select {
+        h2 { margin-bottom: 5px; color: var(--negro); }
+        .cuota-info { color: #666; margin-bottom: 20px; }
+
+        input[type="text"], select {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-sizing: border-box;
+        }
+
+        /* DISEÑO DE PASARELA TIPO IMAGEN */
+        .metodos-contenedor {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .metodo-opcion {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .metodo-opcion:hover {
+            border-color: var(--oro);
+            background: #fffdf0;
+        }
+
+        /* Cuando el radio está seleccionado */
+        .metodo-opcion input[type="radio"]:checked + .metodo-info {
+            color: var(--negro);
+        }
+
+        .metodo-opcion input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: var(--negro);
+        }
+
+        .metodo-iconos {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .metodo-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metodo-info span {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .metodo-info small {
+            color: #777;
+            font-size: 0.75rem;
         }
 
         .btn-pagar {
@@ -60,43 +118,20 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 1.1rem;
-            margin-top: 20px;
-            transition: 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn-pagar:hover {
-            background: #333;
-        }
+        .btn-pagar:hover { background: #333; }
 
         .recibo {
             display: none;
             margin-top: 20px;
             padding: 15px;
-            border: 2px dashed #333;
-            background: #fff8dc;
+            border: 2px dashed var(--negro);
+            background: #fffdeb;
             text-align: left;
-        }
-
-        .metodos-pago {
-            text-align: left;
-            margin: 15px 0;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 8px;
-        }
-
-        .metodo-opcion {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-
-        /* Estilo para que el radio no se deforme */
-        .metodo-opcion input[type="radio"] {
-            width: auto;
-            margin-right: 10px;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -104,41 +139,58 @@
 <body>
 
 <div class="payment-card">
-    <img src="logo2.png" class="logo-small" alt="Logo">
-
-    <h2>PAGO DE CUOTA</h2>
-    <p>Valor de la cuota: <strong>$5.000</strong></p>
+    <img src="logo2.png" class="logo-small" alt="Logo Club Constitución">
+    <h2>CLUB CONSTITUCIÓN</h2>
+    <p class="cuota-info">Valor de la cuota: <strong>$5.000</strong></p>
 
     <form id="pagoForm">
-
         <select id="mesPago" required>
-            <option value="">Seleccionar Mes</option>
+            <option value="">Seleccionar Mes a Pagar</option>
             <option value="Enero">Enero</option>
             <option value="Febrero">Febrero</option>
             <option value="Marzo">Marzo</option>
             <option value="Abril">Abril</option>
         </select>
 
-        <div class="metodos-pago">
-            <strong style="display: block; margin-bottom: 10px;">Método de pago:</strong>
+        <div class="metodos-contenedor">
+            <p style="font-weight: bold; margin-bottom: 10px;">Seleccione medio de pago:</p>
 
             <label class="metodo-opcion">
-                <input type="radio" name="metodoPago" value="Crédito" required>
-                <span>Tarjeta de Crédito</span>
-            </label>
-
-            <label class="metodo-opcion">
-                <input type="radio" name="metodoPago" value="Débito">
-                <span>Tarjeta de Débito</span>
+                <input type="radio" name="metodoPago" value="Tarjetas" required>
+                <div class="metodo-info">
+                    <span>Tarjetas de Crédito y Débito</span>
+                    <small>Visa, Mastercard, Maestro</small>
+                </div>
+                <div class="metodo-iconos">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                </div>
             </label>
 
             <label class="metodo-opcion">
                 <input type="radio" name="metodoPago" value="Mercado Pago">
-                <span>Mercado Pago</span>
+                <div class="metodo-info">
+                    <span>Mercado Pago</span>
+                    <small>Dinero en cuenta o tarjetas</small>
+                </div>
+                <div class="metodo-iconos">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </label>
+
+            <label class="metodo-opcion">
+                <input type="radio" name="metodoPago" value="Transferencia">
+                <div class="metodo-info">
+                    <span>Transferencia Bancaria</span>
+                    <small>CBU / Alias del Club</small>
+                </div>
+                <div class="metodo-iconos">
+                    <i class="fas fa-university"></i>
+                </div>
             </label>
         </div>
 
-        <input type="text" id="tarjeta" placeholder="Número de Tarjeta / Cuenta (Simulado)" required>
+        <input type="text" id="tarjeta" placeholder="Número de Tarjeta o Comprobante" required>
 
         <button type="submit" class="btn-pagar">REALIZAR PAGO</button>
     </form>
@@ -162,10 +214,8 @@
 <script src="firebase-config.js"></script>
 
 <script>
-    // Recuperar el DNI de la sesión
     const dniSocio = localStorage.getItem('sesionActiva');
 
-    // Redirigir si no hay sesión
     if (!dniSocio) {
         window.location.href = 'login.html';
     }
@@ -184,7 +234,6 @@
         const metodoPago = metodoSeleccionado.value;
 
         try {
-            // 1. Guardar el pago en la colección "pagos"
             await db.collection("pagos").add({
                 dni: dniSocio,
                 mes: mes,
@@ -193,21 +242,18 @@
                 fecha: new Date()
             });
 
-            // 2. Actualizar estado del socio en la colección "socios"
-            // Nota: Se asume que el ID del documento es el DNI
             await db.collection("socios").doc(dniSocio).update({
                 estadoCuota: "Al día"
             });
 
-            // 3. Mostrar recibo y ocultar formulario
             document.getElementById('pagoForm').style.display = 'none';
             document.getElementById('reciboDigital').style.display = 'block';
 
-            // Formatear fecha para el recibo
             const fechaActual = new Date().toLocaleDateString();
 
             document.getElementById('detalleRecibo').innerHTML = `
                 <strong>Socio DNI:</strong> ${dniSocio}<br>
+                <strong>Club:</strong> Constitución<br>
                 <strong>Mes pagado:</strong> ${mes}<br>
                 <strong>Método:</strong> ${metodoPago}<br>
                 <strong>Importe:</strong> $5.000<br>
@@ -218,7 +264,7 @@
 
         } catch (error) {
             console.error("Error Firebase:", error);
-            alert("Error al procesar el pago. Verifica la conexión.");
+            alert("Error al procesar el pago.");
         }
     };
 </script>
