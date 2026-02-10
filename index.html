@@ -11,6 +11,7 @@
         #splash { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--negro); display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1.5s; }
         #splash.hidden { opacity: 0; visibility: hidden; }
         .logo-container { text-align: center; }
+        /* ACA USAMOS TU IMAGEN LOCAL */
         .logo-container img { width: 180px; height: 180px; border-radius: 50%; border: 5px solid var(--oro); margin-bottom: 20px; }
         header { background-color: var(--negro); color: var(--oro); padding: 20px; text-align: center; border-bottom: 5px solid var(--oro); }
         .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -22,7 +23,8 @@
     </style>
 </head>
 <body>
-    <div id="splash"><div class="logo-container"><img src="https://i.ibb.co/mFp7m8p/logo.png"></div></div>
+    <div id="splash"><div class="logo-container"><img src="logo2.png"></div></div>
+    
     <header><h1>C.S. y D. CONSTITUCIÓN</h1></header>
     <div class="container">
         <div class="form-card">
@@ -32,7 +34,11 @@
                 <input type="text" id="dni" placeholder="DNI (Será tu usuario)" required>
                 <input type="password" id="pass" placeholder="Crear Contraseña" required>
                 <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
-                <select id="categoria"><option value="Fútbol">Fútbol</option><option value="Vóley">Vóley</option><option value="Social">Socio Social</option></select>
+                <select id="categoria">
+                    <option value="Fútbol">Fútbol</option>
+                    <option value="Vóley">Vóley</option>
+                    <option value="Social">Socio Social</option>
+                </select>
                 <button type="submit">FINALIZAR REGISTRO</button>
             </form>
         </div>
@@ -43,21 +49,37 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase-config.js"></script>
     <script>
+        // Quitar la pantalla de bienvenida
         window.onload = () => setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1500);
+
+        // Registro de socios
         document.getElementById('registroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nombre = document.getElementById('nombre').value;
             const dni = document.getElementById('dni').value;
             const pass = document.getElementById('pass').value;
-            if (pass !== document.getElementById('pass2').value) { alert("Error en contraseñas"); return; }
+            
+            if (pass !== document.getElementById('pass2').value) { 
+                alert("Las contraseñas no coinciden"); 
+                return; 
+            }
+            
             const nroSocio = Math.floor(Math.random() * 9000) + 1000;
+            
             try {
                 await db.collection("socios").doc(dni).set({
-                    nombre, dni, pass, categoria: document.getElementById('categoria').value,
-                    nroSocio, estadoCuota: "Al día", fechaAlta: new Date()
+                    nombre, dni, pass, 
+                    categoria: document.getElementById('categoria').value,
+                    nroSocio, 
+                    estadoCuota: "Al día", 
+                    fechaAlta: new Date()
                 });
-                alert("Registro Exitoso"); window.location.href = 'login.html';
-            } catch (err) { alert("Error de conexión"); }
+                alert("¡Socio registrado con éxito!"); 
+                window.location.href = 'login.html';
+            } catch (err) { 
+                console.error(err);
+                alert("Error de conexión. Verificá que el archivo firebase-config.js tenga los datos correctos."); 
+            }
         });
     </script>
 </body>
