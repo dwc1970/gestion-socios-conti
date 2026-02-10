@@ -3,219 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socio - C.S. y D. Constitución</title>
+    <title>Socio - Club Constitución</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --oro: #ffd700;
-            --negro: #000000;
-            --negro-suave: #1a1a1a;
-            --blanco: #ffffff;
-            --rojo-brillante: #ff4d4d;
-            --glass: rgba(255, 255, 255, 0.1);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-
-        body { 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
-            min-height: 100vh;
-            color: var(--negro);
-        }
-
-        /* Splash Screen con Estilo */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: var(--negro); display: flex; justify-content: center; align-items: center;
-            z-index: 10000; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .splash-logo {
-            width: 120px; animation: scaleUp 1s infinite alternate;
-        }
-        @keyframes scaleUp { from { transform: scale(1); } to { transform: scale(1.1); } }
-        .fade-out { opacity: 0; visibility: hidden; }
-
-        /* Header Elegante */
-        header {
-            background: var(--negro);
-            padding: 1.5rem;
-            text-align: center;
-            border-bottom: 4px solid var(--oro);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            position: sticky; top: 0; z-index: 100;
-        }
-        header h1 { color: var(--oro); font-size: 1.4rem; letter-spacing: 2px; }
-
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; }
-
-        /* Tarjeta de Socio Flotante */
-        .profile-card {
-            background: var(--negro-suave);
-            border-radius: 30px;
-            padding: 2.5rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            color: var(--blanco);
-            border: 2px solid var(--oro);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-card::after {
-            content: ''; position: absolute; top: -50%; right: -10%;
-            width: 300px; height: 300px; background: var(--oro);
-            opacity: 0.05; border-radius: 50%;
-        }
-
-        .img-container {
-            width: 140px; height: 140px; border-radius: 50%;
-            background: var(--blanco); padding: 10px;
-            border: 4px solid var(--oro); flex-shrink: 0;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .img-container img { width: 100%; height: 100%; object-fit: contain; }
-
-        .user-data h2 { font-size: 1.8rem; color: var(--oro); margin-bottom: 10px; }
-        .user-data p { margin: 5px 0; font-size: 1rem; opacity: 0.8; }
-        .cat-tag { 
-            display: inline-block; background: var(--oro); color: var(--negro); 
-            padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 0.8rem; margin-top: 10px;
-        }
-
-        /* Grilla de Cuotas Estilo App */
-        .grid-title { 
-            text-align: center; margin-bottom: 1.5rem; font-size: 1.2rem; 
-            text-transform: uppercase; letter-spacing: 2px; color: var(--negro-suave);
-        }
-
-        .cuotas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .month-card {
-            background: var(--blanco);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .month-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-
-        .month-card h4 { color: #555; font-size: 1.1rem; margin-bottom: 15px; }
-        
-        .status-pill {
-            background: #fff0f0; color: var(--rojo-brillante);
-            padding: 6px 12px; border-radius: 50px; font-size: 0.75rem;
-            font-weight: bold; display: inline-flex; align-items: center; gap: 5px;
-            margin-bottom: 20px;
-        }
-
-        .btn-pay {
-            background: var(--rojo-brillante);
-            color: var(--blanco);
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: block;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-pay:hover { background: #e04343; box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4); }
-
-        .logout-area { text-align: center; margin: 4rem 0; }
-        .logout-link { color: #888; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
-        .logout-link:hover { color: var(--rojo-brillante); }
-
-        @media (max-width: 600px) {
-            .profile-card { flex-direction: column; text-align: center; padding: 2rem; }
-            .cuotas-grid { grid-template-columns: 1fr; }
-        }
+        :root { --oro: #ffd700; --negro: #000000; --blanco: #ffffff; }
+        body { background: #f5f7fa; font-family: 'Poppins', sans-serif; margin: 0; }
+        header { background: var(--negro); color: var(--oro); padding: 20px; text-align: center; border-bottom: 5px solid var(--oro); }
+        .user-info { background: var(--negro); color: var(--blanco); padding: 20px; border-radius: 15px; margin: 20px; border: 2px solid var(--oro); }
+        .cuotas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
+        .month-card { background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 4px solid var(--negro); }
+        .status-pill { display: block; padding: 5px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin: 10px 0; color: white; }
+        .btn-pay { display: block; background: var(--oro); color: var(--negro); text-decoration: none; padding: 8px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-
-    <div id="splash-screen">
-        <img src="logo2.png" class="splash-logo" alt="Logo">
+    <header><h1>MI PERFIL</h1></header>
+    <div class="user-info">
+        <h2 id="userName">Cargando...</h2>
+        <p>DNI: <span id="userDni"></span> | Socio Nº: <span id="userNro"></span></p>
+        <p>Categoría: <span id="userCat"></span></p>
     </div>
+    <h3 style="margin-left: 20px;">ESTADO DE CUOTAS 2025</h3>
+    <div class="cuotas-grid" id="cuotasContainer"></div>
 
-    <header>
-        <h1>C.S. y D. CONSTITUCIÓN</h1>
-    </header>
-
-    <div class="container">
-        <div class="profile-card">
-            <div class="img-container">
-                <img src="logo2.png" alt="Socio">
-            </div>
-            <div class="user-data">
-                <h2 id="userName">CARGANDO...</h2>
-                <p><i class="fas fa-id-card"></i> DNI: <span id="userDni">-</span></p>
-                <p><i class="fas fa-hashtag"></i> Socio N°: <span id="userNro">-</span></p>
-                <span class="cat-tag" id="userCat">-</span>
-            </div>
-        </div>
-
-        <h3 class="grid-title">Gestión de Cuotas 2025</h3>
-        <div class="cuotas-grid" id="cuotasContainer">
-            </div>
-
-        <div class="logout-area">
-            <a href="login.html" class="logout-link" onclick="localStorage.removeItem('sesionActiva')">
-                <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN SEGURA
-            </a>
-        </div>
-    </div>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Splash Control
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('fade-out');
-            }, 1200);
+        document.addEventListener('DOMContentLoaded', async () => {
+            const dni = localStorage.getItem('sesionActiva');
+            if (!dni) { window.location.href = 'login.html'; return; }
 
-            // Cargar Datos del LocalStorage
-            const dniActivo = localStorage.getItem('sesionActiva');
-            if (!dniActivo) { window.location.href = 'login.html'; return; }
+            const doc = await db.collection("socios").doc(dni).get();
+            const user = doc.data();
+            document.getElementById('userName').textContent = user.nombre;
+            document.getElementById('userDni').textContent = user.dni;
+            document.getElementById('userNro').textContent = user.nroSocio;
+            document.getElementById('userCat').textContent = user.categoria;
 
-            const user = JSON.parse(localStorage.getItem(`user_${dniActivo}`));
-            if (user) {
-                document.getElementById('userName').textContent = user.nombre;
-                document.getElementById('userDni').textContent = user.dni;
-                document.getElementById('userNro').textContent = user.nroSocio;
-                document.getElementById('userCat').textContent = user.categoria;
-            }
+            const pagosSnap = await db.collection("pagos").where("dni", "==", dni).get();
+            const pagados = pagosSnap.docs.map(d => d.data().mes);
 
-            // Generar Cuotas (Todas Pendientes)
-            const meses = [
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
-                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-            ];
-            
+            const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
             const container = document.getElementById('cuotasContainer');
-            
+
             meses.forEach(mes => {
+                const estaPago = pagados.includes(mes);
                 const card = document.createElement('div');
                 card.className = 'month-card';
                 card.innerHTML = `
-                    <h4>${mes} 2025</h4>
-                    <span class="status-pill">
-                        <i class="fas fa-clock"></i> PENDIENTE
+                    <h4>${mes}</h4>
+                    <span class="status-pill" style="background: ${estaPago ? '#2ecc71' : '#ff4d4d'}">
+                        <i class="fas ${estaPago ? 'fa-check-circle' : 'fa-clock'}"></i> ${estaPago ? 'PAGADO' : 'PENDIENTE'}
                     </span>
-                    <a href="pagos.html?mes=${mes}" class="btn-pay">PAGAR CUOTA</a>
+                    ${estaPago ? '' : `<a href="pagos.html?mes=${mes}" class="btn-pay">PAGAR</a>`}
                 `;
                 container.appendChild(card);
             });

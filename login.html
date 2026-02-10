@@ -2,105 +2,115 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Constitución</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Club Constitución</title>
     <style>
         :root { --primario: #000000; --secundario: #ffd700; --blanco: #ffffff; }
         
-        body { background: #e6e6e6; font-family: Arial, sans-serif; margin: 0; }
+        body { background: #e6e6e6; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
         
+        /* Splash Screen */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: white; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 0.8s; }
-        .logo-box { background: var(--primario); padding: 25px; border-radius: 20px; border: 4px solid var(--secundario); }
+        .logo-box { background: var(--primario); padding: 25px; border-radius: 20px; border: 4px solid var(--secundario); text-align: center; }
         .logo-box img { width: 150px; height: 150px; border-radius: 50%; }
         .fade-out { opacity: 0; visibility: hidden; }
         
         header { 
-            background: var(--primario); 
-            color: var(--secundario); 
-            padding: 1.5rem; 
-            text-align: center; 
-            border-bottom: 5px solid var(--secundario);
-            font-size: 1.2rem;
-        }
-        
-        .card { 
-            background: var(--blanco); 
-            padding: 2.5rem; 
-            border-radius: 20px; 
-            width: 380px; 
-            margin: 60px auto; 
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        h2 { color: #000; font-weight: bold; margin-bottom: 25px; font-size: 24px; }
-        
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            border: 1px solid #ccc; 
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        
-        button { 
-            background: #f1c40f; 
-            color: #000; 
-            padding: 14px; 
-            width: 100%; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border: none; 
-            border-radius: 4px;
-            margin-top: 15px;
-            font-size: 16px;
-            text-transform: uppercase;
+            background: var(--primario); color: var(--secundario); padding: 1.5rem; 
+            text-align: center; border-bottom: 5px solid var(--secundario); font-size: 1.2rem; font-weight: bold;
         }
 
-        button:hover { background: #dec000; }
+        .login-container {
+            flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+
+        .login-card {
+            background: var(--blanco); padding: 40px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 350px;
+            text-align: center; border-bottom: 5px solid var(--secundario);
+        }
+
+        .login-card img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--secundario); margin-bottom: 15px; }
+        
+        input {
+            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc;
+            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
+        }
+
+        button {
+            width: 100%; padding: 12px; background: var(--primario); color: var(--secundario);
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 1.1rem; margin-top: 10px; transition: 0.3s;
+        }
+
+        button:hover { transform: scale(1.02); background: #1a1a1a; }
+
+        .footer-links { margin-top: 20px; font-size: 0.9rem; }
+        .footer-links a { color: var(--primario); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div id="splash-screen"><div class="logo-box"><img src="logo2.png"></div></div>
-    
-    <header><h1>C.S. y D. CONSTITUCIÓN</h1></header>
-    
-    <div class="card">
-        <img src="logo2.png" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px;">
-        <h2>INGRESAR</h2>
-        <form id="logForm">
-            <input type="text" id="dniLog" placeholder="DNI (Usuario)" required>
-            <input type="password" id="passLog" placeholder="Contraseña" required>
-            <button type="submit">INGRESAR</button>
-        </form>
+
+    <div id="splash-screen">
+        <div class="logo-box">
+            <img src="https://i.ibb.co/mFp7m8p/logo.png" alt="Logo">
+        </div>
     </div>
 
-    <script>
-        window.onload = () => setTimeout(() => document.getElementById('splash-screen').classList.add('fade-out'), 800);
+    <header>C.S. y D. CONSTITUCIÓN</header>
 
-        document.getElementById('logForm').onsubmit = e => {
+    <div class="login-container">
+        <div class="login-card">
+            <img src="https://i.ibb.co/mFp7m8p/logo.png" alt="Logo">
+            <h2 style="margin-bottom: 20px;">INGRESAR</h2>
+            <form id="logForm">
+                <input type="text" id="dniLog" placeholder="DNI (Usuario)" required>
+                <input type="password" id="passLog" placeholder="Contraseña" required>
+                <button type="submit">ENTRAR</button>
+            </form>
+            <div class="footer-links">
+                ¿No tenés cuenta? <a href="index.html">Registrate acá</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        // Quitar splash screen
+        window.onload = () => setTimeout(() => {
+            document.getElementById('splash-screen').classList.add('fade-out');
+        }, 800);
+
+        // Lógica de Login con Firebase
+        document.getElementById('logForm').onsubmit = async (e) => {
             e.preventDefault();
             
             const dni = document.getElementById('dniLog').value.trim();
             const passEscrita = document.getElementById('passLog').value.trim();
 
-            const data = localStorage.getItem(`user_${dni}`);
+            try {
+                // Buscamos al socio por su DNI (que es el ID del documento)
+                const doc = await db.collection("socios").doc(dni).get();
 
-            if (data) {
-                const socio = JSON.parse(data);
-                
-                // CORRECCIÓN: Ahora lee 'pass' que es como lo guarda el registro
-                const passAlmacenada = String(socio.pass).trim();
-
-                if (passAlmacenada === passEscrita) {
-                    localStorage.setItem('sesionActiva', dni);
-                    window.location.href = 'perfil.html';
+                if (doc.exists) {
+                    const socio = doc.data();
+                    
+                    // Verificamos la contraseña
+                    if (socio.pass === passEscrita) {
+                        localStorage.setItem('sesionActiva', dni); // Guardamos quién entró
+                        window.location.href = 'perfil.html';
+                    } else {
+                        alert("La contraseña es incorrecta");
+                    }
                 } else {
-                    alert("Datos incorrectos");
+                    alert("No existe ningún socio registrado con ese DNI");
                 }
-            } else {
-                alert("Datos incorrectos");
+            } catch (error) {
+                console.error("Error en el ingreso:", error);
+                alert("Hubo un error al conectar con la base de datos.");
             }
         };
     </script>
