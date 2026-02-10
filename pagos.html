@@ -23,7 +23,7 @@
 
         .payment-card {
             background: var(--blanco);
-            max-width: 450px; /* Un poco más ancho para las opciones */
+            max-width: 450px;
             margin: 30px auto;
             padding: 30px;
             border-radius: 20px;
@@ -39,24 +39,7 @@
             margin-bottom: 10px;
         }
 
-        h2 { margin-bottom: 5px; color: var(--negro); }
-        .cuota-info { color: #666; margin-bottom: 20px; }
-
-        input[type="text"], select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        /* DISEÑO DE PASARELA TIPO IMAGEN */
-        .metodos-contenedor {
-            text-align: left;
-            margin: 20px 0;
-        }
-
+        /* Estilos de la pasarela */
         .metodo-opcion {
             display: flex;
             align-items: center;
@@ -65,47 +48,37 @@
             border: 2px solid #eee;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
 
-        .metodo-opcion:hover {
-            border-color: var(--oro);
-            background: #fffdf0;
+        .metodo-opcion:hover { border-color: var(--oro); }
+
+        /* Contenedores dinámicos */
+        .seccion-pago {
+            display: none; /* Oculto por defecto */
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: left;
+            animation: fadeIn 0.5s;
         }
 
-        /* Cuando el radio está seleccionado */
-        .metodo-opcion input[type="radio"]:checked + .metodo-info {
-            color: var(--negro);
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
         }
 
-        .metodo-opcion input[type="radio"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 15px;
-            accent-color: var(--negro);
-        }
-
-        .metodo-iconos {
-            margin-left: auto;
-            display: flex;
-            gap: 8px;
-            font-size: 1.2rem;
-            color: #555;
-        }
-
-        .metodo-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .metodo-info span {
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        .metodo-info small {
-            color: #777;
-            font-size: 0.75rem;
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .btn-pagar {
@@ -118,12 +91,14 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 1.1rem;
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-top: 15px;
         }
 
-        .btn-pagar:hover { background: #333; }
+        .info-transferencia {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #444;
+        }
 
         .recibo {
             display: none;
@@ -131,7 +106,6 @@
             padding: 15px;
             border: 2px dashed var(--negro);
             background: #fffdeb;
-            text-align: left;
         }
     </style>
 </head>
@@ -139,73 +113,77 @@
 <body>
 
 <div class="payment-card">
-    <img src="logo2.png" class="logo-small" alt="Logo Club Constitución">
+    <img src="logo2.png" class="logo-small" alt="Logo">
     <h2>CLUB CONSTITUCIÓN</h2>
-    <p class="cuota-info">Valor de la cuota: <strong>$5.000</strong></p>
+    <p>Cuota Social: <strong>$5.000</strong></p>
 
     <form id="pagoForm">
         <select id="mesPago" required>
-            <option value="">Seleccionar Mes a Pagar</option>
+            <option value="">Seleccionar Mes</option>
             <option value="Enero">Enero</option>
             <option value="Febrero">Febrero</option>
             <option value="Marzo">Marzo</option>
             <option value="Abril">Abril</option>
         </select>
 
-        <div class="metodos-contenedor">
-            <p style="font-weight: bold; margin-bottom: 10px;">Seleccione medio de pago:</p>
+        <p style="text-align: left; font-weight: bold;">Elegir medio de pago:</p>
 
-            <label class="metodo-opcion">
-                <input type="radio" name="metodoPago" value="Tarjetas" required>
-                <div class="metodo-info">
-                    <span>Tarjetas de Crédito y Débito</span>
-                    <small>Visa, Mastercard, Maestro</small>
-                </div>
-                <div class="metodo-iconos">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                </div>
-            </label>
+        <label class="metodo-opcion">
+            <input type="radio" name="metodoPago" value="tarjeta" onclick="mostrarSeccion('form-tarjeta')" required>
+            <div style="margin-left: 10px;">
+                <strong>Tarjetas de Crédito / Débito</strong><br>
+                <small>Visa, Mastercard, etc.</small>
+            </div>
+        </label>
 
-            <label class="metodo-opcion">
-                <input type="radio" name="metodoPago" value="Mercado Pago">
-                <div class="metodo-info">
-                    <span>Mercado Pago</span>
-                    <small>Dinero en cuenta o tarjetas</small>
-                </div>
-                <div class="metodo-iconos">
-                    <i class="fas fa-wallet"></i>
-                </div>
-            </label>
+        <label class="metodo-opcion">
+            <input type="radio" name="metodoPago" value="mercadopago" onclick="mostrarSeccion('form-mp')">
+            <div style="margin-left: 10px;">
+                <strong>Mercado Pago</strong><br>
+                <small>Paga con tu cuenta o QR</small>
+            </div>
+        </label>
 
-            <label class="metodo-opcion">
-                <input type="radio" name="metodoPago" value="Transferencia">
-                <div class="metodo-info">
-                    <span>Transferencia Bancaria</span>
-                    <small>CBU / Alias del Club</small>
-                </div>
-                <div class="metodo-iconos">
-                    <i class="fas fa-university"></i>
-                </div>
-            </label>
+        <label class="metodo-opcion">
+            <input type="radio" name="metodoPago" value="transferencia" onclick="mostrarSeccion('form-transf')">
+            <div style="margin-left: 10px;">
+                <strong>Transferencia Bancaria</strong><br>
+                <small>CBU o Alias</small>
+            </div>
+        </label>
+
+        <div id="form-tarjeta" class="seccion-pago">
+            <label>Número de Tarjeta</label>
+            <input type="text" placeholder="0000 0000 0000 0000" id="numTarjeta">
+            <div class="grid-inputs">
+                <input type="text" placeholder="MM/AA" id="expira">
+                <input type="text" placeholder="CVV" id="cvv">
+            </div>
+            <input type="text" placeholder="Nombre como figura en la tarjeta" id="nombreTarj">
         </div>
 
-        <input type="text" id="tarjeta" placeholder="Número de Tarjeta o Comprobante" required>
+        <div id="form-mp" class="seccion-pago" style="text-align: center;">
+            <i class="fab fa-amazon-pay" style="font-size: 3rem; color: #009ee3;"></i>
+            <p>Serás redirigido a la plataforma de Mercado Pago para finalizar de forma segura.</p>
+        </div>
 
-        <button type="submit" class="btn-pagar">REALIZAR PAGO</button>
+        <div id="form-transf" class="seccion-pago">
+            <div class="info-transferencia">
+                <strong>Alias:</strong> CLUB.CONSTI.PAGOS<br>
+                <strong>CBU:</strong> 0000003100012345678901<br>
+                <strong>Titular:</strong> Club Constitución Social y Deportivo
+            </div>
+            <p style="font-size: 0.8rem; margin-top:10px;">Adjunte el número de comprobante abajo:</p>
+            <input type="text" placeholder="N° de Operación / Comprobante" id="comprobante">
+        </div>
+
+        <button type="submit" class="btn-pagar" id="btnAccion">REALIZAR PAGO</button>
     </form>
 
     <div id="reciboDigital" class="recibo">
-        <h3 style="text-align: center;">✅ PAGO EXITOSO</h3>
-        <hr>
+        <h3>✅ PAGO REGISTRADO</h3>
         <p id="detalleRecibo"></p>
-        <hr>
-        <div style="text-align: center;">
-            <button onclick="window.location.href='perfil.html'"
-                style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline; margin-top: 10px;">
-                Volver a mi Perfil
-            </button>
-        </div>
+        <button onclick="window.location.href='perfil.html'" style="color:blue; cursor:pointer; background:none; border:none; text-decoration:underline;">Volver al Perfil</button>
     </div>
 </div>
 
@@ -216,58 +194,43 @@
 <script>
     const dniSocio = localStorage.getItem('sesionActiva');
 
-    if (!dniSocio) {
-        window.location.href = 'login.html';
+    function mostrarSeccion(id) {
+        // Ocultar todas las secciones primero
+        document.querySelectorAll('.seccion-pago').forEach(s => s.style.display = 'none');
+        // Mostrar la seleccionada
+        document.getElementById(id).style.display = 'block';
+        
+        // Cambiar texto del botón según método
+        const btn = document.getElementById('btnAccion');
+        if(id === 'form-mp') btn.innerText = "IR A MERCADO PAGO";
+        else btn.innerText = "CONFIRMAR PAGO";
     }
 
     document.getElementById('pagoForm').onsubmit = async (e) => {
         e.preventDefault();
-
         const mes = document.getElementById('mesPago').value;
-        const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked');
-        
-        if (!metodoSeleccionado) {
-            alert("Por favor selecciona un método de pago");
-            return;
-        }
-
-        const metodoPago = metodoSeleccionado.value;
+        const metodo = document.querySelector('input[name="metodoPago"]:checked').value;
 
         try {
             await db.collection("pagos").add({
                 dni: dniSocio,
                 mes: mes,
-                metodo: metodoPago,
+                metodo: metodo,
                 monto: 5000,
                 fecha: new Date()
             });
 
-            await db.collection("socios").doc(dniSocio).update({
-                estadoCuota: "Al día"
-            });
+            await db.collection("socios").doc(dniSocio).update({ estadoCuota: "Al día" });
 
             document.getElementById('pagoForm').style.display = 'none';
             document.getElementById('reciboDigital').style.display = 'block';
+            document.getElementById('detalleRecibo').innerText = `DNI: ${dniSocio}\nMes: ${mes}\nMétodo: ${metodo}\nMonto: $5.000`;
 
-            const fechaActual = new Date().toLocaleDateString();
-
-            document.getElementById('detalleRecibo').innerHTML = `
-                <strong>Socio DNI:</strong> ${dniSocio}<br>
-                <strong>Club:</strong> Constitución<br>
-                <strong>Mes pagado:</strong> ${mes}<br>
-                <strong>Método:</strong> ${metodoPago}<br>
-                <strong>Importe:</strong> $5.000<br>
-                <strong>Fecha:</strong> ${fechaActual}
-            `;
-
-            alert("¡Pago registrado correctamente!");
-
+            alert("Pago procesado con éxito.");
         } catch (error) {
-            console.error("Error Firebase:", error);
             alert("Error al procesar el pago.");
         }
     };
 </script>
-
 </body>
 </html>
