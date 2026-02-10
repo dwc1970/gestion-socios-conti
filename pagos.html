@@ -38,7 +38,7 @@
             margin-bottom: 10px;
         }
 
-        /* Estilos de las opciones tipo "Card" */
+        /* Estilo de las opciones de pago */
         .metodo-opcion {
             display: flex;
             align-items: center;
@@ -52,9 +52,6 @@
         }
 
         .metodo-opcion:hover { border-color: var(--oro); }
-        
-        /* Cuando el radio está seleccionado, resaltamos el borde */
-        input[type="radio"]:checked + .opcion-contenido { color: var(--negro); }
 
         .opcion-contenido { margin-left: 10px; flex-grow: 1; }
         .opcion-contenido strong { display: block; font-size: 0.95rem; }
@@ -69,7 +66,10 @@
             border-radius: 10px;
             text-align: left;
             border: 1px solid #ddd;
+            animation: fadeIn 0.4s;
         }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         input, select {
             width: 100%;
@@ -78,6 +78,7 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             box-sizing: border-box;
+            font-size: 1rem;
         }
 
         .grid-campos {
@@ -97,6 +98,7 @@
             cursor: pointer;
             font-size: 1.1rem;
             margin-top: 20px;
+            text-transform: uppercase;
         }
 
         .recibo {
@@ -118,7 +120,7 @@
 
     <form id="pagoForm">
         <select id="mesPago" required>
-            <option value="">Seleccionar Mes</option>
+            <option value="">Seleccionar Mes a pagar</option>
             <option value="Enero">Enero</option>
             <option value="Febrero">Febrero</option>
             <option value="Marzo">Marzo</option>
@@ -133,7 +135,7 @@
             <option value="Diciembre">Diciembre</option>
         </select>
 
-        <p style="text-align: left; font-weight: bold; margin-bottom: 10px;">Seleccione medio de pago:</p>
+        <p style="text-align: left; font-weight: bold; margin: 15px 0 10px 0;">Seleccione medio de pago:</p>
 
         <label class="metodo-opcion">
             <input type="radio" name="metodoPago" value="Tarjeta" onclick="alternarSecciones('sec-tarjeta')" required>
@@ -148,7 +150,7 @@
             <input type="radio" name="metodoPago" value="Mercado Pago" onclick="alternarSecciones('sec-mp')">
             <div class="opcion-contenido">
                 <strong>Mercado Pago</strong>
-                <small>Dinero en cuenta o tarjetas</small>
+                <small>Billetera virtual o QR</small>
             </div>
             <i class="fas fa-wallet"></i>
         </label>
@@ -169,30 +171,32 @@
                 <input type="text" id="t-exp" placeholder="MM/AA">
                 <input type="text" id="t-cvv" placeholder="CVV">
             </div>
-            <input type="text" id="t-nombre" placeholder="Nombre del titular">
+            <input type="text" id="t-nombre" placeholder="Nombre como figura en la tarjeta">
         </div>
 
         <div id="sec-mp" class="detalle-pago" style="text-align: center;">
-            <p>Se abrirá el portal de Mercado Pago para continuar.</p>
-            <input type="email" id="mp-email" placeholder="Email de tu cuenta MP">
+            <p>Se utilizará tu cuenta de Mercado Pago vinculada.</p>
+            <input type="email" id="mp-email" placeholder="Email de tu cuenta Mercado Pago">
         </div>
 
         <div id="sec-transf" class="detalle-pago">
-            <p style="font-size: 0.85rem; color: #555;">
+            <p style="font-size: 0.85rem; background: #eee; padding: 10px; border-radius: 5px;">
                 <strong>CBU:</strong> 0000003100012345678901<br>
                 <strong>Alias:</strong> CLUB.CONSTI.PAGO
             </p>
-            <label>ID de Transacción / Alias desde donde envió</label>
-            <input type="text" id="tr-comprobante" placeholder="Ej: Pago-Marzo-DNI">
+            <label>Comprobante o Alias de origen</label>
+            <input type="text" id="tr-comprobante" placeholder="Ej: Alias.De.Mi.Cuenta">
         </div>
 
         <button type="submit" class="btn-pagar" id="btnPago">REALIZAR PAGO</button>
     </form>
 
     <div id="reciboDigital" class="recibo">
-        <h3>✅ PAGO REGISTRADO</h3>
+        <h3 style="text-align: center;">✅ PAGO EXITOSO</h3>
+        <hr>
         <p id="detalleRecibo"></p>
-        <button onclick="window.location.href='perfil.html'" style="color:blue; background:none; border:none; cursor:pointer; text-decoration:underline;">Volver al Perfil</button>
+        <hr>
+        <button onclick="window.location.href='perfil.html'" style="color:blue; background:none; border:none; cursor:pointer; text-decoration:underline; width: 100%;">Volver al Perfil</button>
     </div>
 </div>
 
@@ -202,55 +206,50 @@
 
 <script>
     const dniSocio = localStorage.getItem('sesionActiva');
+    if (!dniSocio) { window.location.href = 'login.html'; }
 
-    // Función para mostrar solo la sección elegida
     function alternarSecciones(idMostrar) {
-        // Ocultar todas
         document.querySelectorAll('.detalle-pago').forEach(div => div.style.display = 'none');
-        // Mostrar la elegida
         document.getElementById(idMostrar).style.display = 'block';
         
-        // Ajustar texto del botón
         const btn = document.getElementById('btnPago');
-        if(idMostrar === 'sec-mp') btn.innerText = "IR A MERCADO PAGO";
-        else btn.innerText = "REALIZAR PAGO";
+        btn.innerText = (idMostrar === 'sec-mp') ? "PAGAR CON MERCADO PAGO" : "REALIZAR PAGO";
     }
 
     document.getElementById('pagoForm').onsubmit = async (e) => {
         e.preventDefault();
-        
         const mes = document.getElementById('mesPago').value;
-        const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
-        
-        // Capturar el dato de identificación según el método
-        let identificadorPago = "";
-        if(metodoSeleccionado === "Tarjeta") identificadorPago = document.getElementById('t-numero').value;
-        if(metodoSeleccionado === "Mercado Pago") identificadorPago = document.getElementById('mp-email').value;
-        if(metodoSeleccionado === "Transferencia") identificadorPago = document.getElementById('tr-comprobante').value;
+        const metodo = document.querySelector('input[name="metodoPago"]:checked').value;
+
+        let referencia = "";
+        if(metodo === "Tarjeta") referencia = document.getElementById('t-numero').value;
+        if(metodo === "Mercado Pago") referencia = document.getElementById('mp-email').value;
+        if(metodo === "Transferencia") referencia = document.getElementById('tr-comprobante').value;
 
         try {
-            // 1. Guardar en Firebase
             await db.collection("pagos").add({
                 dni: dniSocio,
                 mes: mes,
-                metodo: metodoSeleccionado,
-                referencia: identificadorPago,
+                metodo: metodo,
+                referencia: referencia,
                 monto: 5000,
                 fecha: new Date()
             });
 
-            // 2. Actualizar Socio
             await db.collection("socios").doc(dniSocio).update({ estadoCuota: "Al día" });
 
-            // 3. Mostrar Recibo
             document.getElementById('pagoForm').style.display = 'none';
             document.getElementById('reciboDigital').style.display = 'block';
-            document.getElementById('detalleRecibo').innerText = `DNI: ${dniSocio}\nMes: ${mes}\nMedio: ${metodoSeleccionado}\nRef: ${identificadorPago}`;
+            document.getElementById('detalleRecibo').innerHTML = `
+                <strong>Socio DNI:</strong> ${dniSocio}<br>
+                <strong>Mes:</strong> ${mes}<br>
+                <strong>Medio:</strong> ${metodo}<br>
+                <strong>Ref:</strong> ${referencia}
+            `;
 
-            alert("Pago registrado con éxito");
+            alert("¡Pago procesado correctamente!");
         } catch (error) {
-            console.error(error);
-            alert("Error al procesar el pago");
+            alert("Error al conectar con la base de datos.");
         }
     };
 </script>
