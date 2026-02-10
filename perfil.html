@@ -76,14 +76,20 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase-config.js"></script>
     <script>
+        // Función corregida para borrar la sesión
         function cerrarSesion() {
-            localStorage.removeItem('sesionActiva');
+            localStorage.removeItem('dniSocio'); // Usamos el mismo nombre
             window.location.href = 'index.html';
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const dni = localStorage.getItem('sesionActiva');
-            if (!dni) { window.location.href = 'index.html'; return; }
+            // Buscamos 'dniSocio', que es lo que guarda el index y el login
+            const dni = localStorage.getItem('dniSocio'); 
+            
+            if (!dni) { 
+                window.location.href = 'index.html'; 
+                return; 
+            }
 
             try {
                 const doc = await db.collection("socios").doc(dni).get();
@@ -103,6 +109,7 @@
                 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
                 const container = document.getElementById('cuotasContainer');
 
+                container.innerHTML = ""; // Limpiamos por las dudas
                 meses.forEach(mes => {
                     const estaPago = pagados.includes(mes);
                     const card = document.createElement('div');
