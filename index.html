@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - C.S. y D. Constitución</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Club Consti">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="logo_canario.png">
+    <link rel="icon" type="image/png" href="logo_canario.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --negro: #000000; --oro: #ffd700; --blanco: #ffffff; --gris-claro: #f4f4f4; }
@@ -11,7 +20,6 @@
         #splash { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--negro); display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1.5s; }
         #splash.hidden { opacity: 0; visibility: hidden; }
         .logo-container { text-align: center; }
-        /* ACA USAMOS TU IMAGEN LOCAL */
         .logo-container img { width: 180px; height: 180px; border-radius: 50%; border: 5px solid var(--oro); margin-bottom: 20px; }
         header { background-color: var(--negro); color: var(--oro); padding: 20px; text-align: center; border-bottom: 5px solid var(--oro); }
         .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }

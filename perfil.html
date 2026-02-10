@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socio - Club Constitución</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Club Consti">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="logo_canario.png">
+    <link rel="icon" type="image/png" href="logo_canario.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --oro: #ffd700; --negro: #000000; --blanco: #ffffff; }
@@ -69,7 +78,7 @@
     <script>
         function cerrarSesion() {
             localStorage.removeItem('sesionActiva');
-            window.location.href = 'index.html'; // Cambialo a login.html si preferís
+            window.location.href = 'index.html';
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
