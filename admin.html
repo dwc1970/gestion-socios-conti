@@ -118,22 +118,27 @@
         // HASH de la clave "Consti2026"
         const HASH_ADMIN = "78c43097e937d7a7114e918805f4165506a5122e2e77b494676156e723528825";
 
-        // Función para verificar clave mediante comparación de HASH
+        // Función corregida para verificar clave
         async function verificarClave() {
             const input = document.getElementById('passInput').value;
             
-            // Convertimos lo que el usuario escribió en un hash SHA-256
-            const msgBuffer = new TextEncoder().encode(input);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            try {
+                // Convertimos lo que el usuario escribió en un hash SHA-256
+                const msgBuffer = new TextEncoder().encode(input);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-            if (hashHex === HASH_ADMIN) {
-                document.getElementById('loginAdmin').style.display = 'none';
-                document.getElementById('panelContenido').style.display = 'block';
-                cargarSocios();
-            } else {
-                alert("Acceso denegado. Clave incorrecta.");
+                if (hashHex === HASH_ADMIN) {
+                    document.getElementById('loginAdmin').style.display = 'none';
+                    document.getElementById('panelContenido').style.display = 'block';
+                    cargarSocios();
+                } else {
+                    alert("Acceso denegado. Clave incorrecta.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error al procesar la seguridad.");
             }
         }
 
