@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagos - Club Constitución</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -38,7 +39,6 @@
             margin-bottom: 10px;
         }
 
-        /* Estilo de las opciones de pago */
         .metodo-opcion {
             display: flex;
             align-items: center;
@@ -57,7 +57,6 @@
         .opcion-contenido strong { display: block; font-size: 0.95rem; }
         .opcion-contenido small { color: #777; font-size: 0.8rem; }
 
-        /* SECCIONES DINÁMICAS (Ocultas por defecto) */
         .detalle-pago {
             display: none; 
             margin-top: 15px;
@@ -205,8 +204,21 @@
 <script src="firebase-config.js"></script>
 
 <script>
-    const dniSocio = localStorage.getItem('sesionActiva');
-    if (!dniSocio) { window.location.href = 'login.html'; }
+    // CORRECCIÓN: Buscamos el DNI con la llave correcta
+    const dniSocio = localStorage.getItem('dniSocio');
+    
+    if (!dniSocio) { 
+        window.location.href = 'login.html'; 
+    }
+
+    // Lógica para capturar el mes que viene desde el perfil
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mesUrl = urlParams.get('mes');
+        if (mesUrl) {
+            document.getElementById('mesPago').value = mesUrl;
+        }
+    };
 
     function alternarSecciones(idMostrar) {
         document.querySelectorAll('.detalle-pago').forEach(div => div.style.display = 'none');
@@ -236,6 +248,7 @@
                 fecha: new Date()
             });
 
+            // Actualizamos el estado en la ficha del socio
             await db.collection("socios").doc(dniSocio).update({ estadoCuota: "Al día" });
 
             document.getElementById('pagoForm').style.display = 'none';
@@ -249,6 +262,7 @@
 
             alert("¡Pago procesado correctamente!");
         } catch (error) {
+            console.error(error);
             alert("Error al conectar con la base de datos.");
         }
     };
