@@ -115,15 +115,12 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        // HASH de la clave "Consti2026"
         const HASH_ADMIN = "78c43097e937d7a7114e918805f4165506a5122e2e77b494676156e723528825";
 
-        // Función corregida para verificar clave
         async function verificarClave() {
-            const input = document.getElementById('passInput').value;
+            const input = document.getElementById('passInput').value.trim();
             
             try {
-                // Convertimos lo que el usuario escribió en un hash SHA-256
                 const msgBuffer = new TextEncoder().encode(input);
                 const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -137,14 +134,12 @@
                     alert("Acceso denegado. Clave incorrecta.");
                 }
             } catch (err) {
-                console.error(err);
-                alert("Error al procesar la seguridad.");
+                alert("Error de seguridad en el navegador.");
             }
         }
 
         function cerrarSesionAdmin() {
             if(confirm("¿Deseas salir del panel de administración?")) {
-                localStorage.removeItem('dniSocio');
                 window.location.href = 'index.html';
             }
         }
@@ -169,10 +164,10 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')" title="Cambiar Estado">
+                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
-                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')" title="Eliminar Socio">
+                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -197,7 +192,7 @@
         }
 
         async function eliminar(dni, nombre) {
-            if(confirm("¿Seguro que querés eliminar a " + nombre + "? Esta acción no se puede deshacer.")) { 
+            if(confirm("¿Seguro que querés eliminar a " + nombre + "?")) { 
                 await db.collection("socios").doc(dni).delete(); 
             }
         }
