@@ -46,17 +46,9 @@
         .btn-update { background: #3498db; }
         
         .btn-salir { 
-            display: inline-block; 
-            margin-top: 10px; 
-            color: var(--oro); 
-            text-decoration: none; 
-            font-size: 0.9rem; 
-            background: none; 
-            border: 1px solid var(--oro); 
-            padding: 5px 15px; 
-            border-radius: 5px; 
-            cursor: pointer;
-            transition: 0.3s;
+            display: inline-block; margin-top: 10px; color: var(--oro); text-decoration: none; 
+            font-size: 0.9rem; background: none; border: 1px solid var(--oro); 
+            padding: 5px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s;
         }
         .btn-salir:hover { background: var(--oro); color: var(--negro); }
     </style>
@@ -115,31 +107,22 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        const HASH_ADMIN = "78c43097e937d7a7114e918805f4165506a5122e2e77b494676156e723528825";
-
-        async function verificarClave() {
+        // Función de entrada DIRECTA (A prueba de errores)
+        function verificarClave() {
             const input = document.getElementById('passInput').value.trim();
             
-            try {
-                const msgBuffer = new TextEncoder().encode(input);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-                if (hashHex === HASH_ADMIN) {
-                    document.getElementById('loginAdmin').style.display = 'none';
-                    document.getElementById('panelContenido').style.display = 'block';
-                    cargarSocios();
-                } else {
-                    alert("Acceso denegado. Clave incorrecta.");
-                }
-            } catch (err) {
-                alert("Error de seguridad en el navegador.");
+            // La clave es Consti2026
+            if (input === "Consti2026") {
+                document.getElementById('loginAdmin').style.display = 'none';
+                document.getElementById('panelContenido').style.display = 'block';
+                cargarSocios();
+            } else {
+                alert("Acceso denegado. Clave incorrecta.");
             }
         }
 
         function cerrarSesionAdmin() {
-            if(confirm("¿Deseas salir del panel de administración?")) {
+            if(confirm("¿Deseas salir del panel?")) {
                 window.location.href = 'index.html';
             }
         }
@@ -164,10 +147,10 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')">
+                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')" title="Cambiar Estado">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
-                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')">
+                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')" title="Eliminar Socio">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -188,12 +171,20 @@
 
         async function cambiarEstado(dni, estadoActual) {
             const nuevoEstado = estadoActual === 'Al día' ? 'Con deuda' : 'Al día';
-            await db.collection("socios").doc(dni).update({ estadoCuota: nuevoEstado });
+            try {
+                await db.collection("socios").doc(dni).update({ estadoCuota: nuevoEstado });
+            } catch (e) {
+                console.error("Error al actualizar:", e);
+            }
         }
 
         async function eliminar(dni, nombre) {
             if(confirm("¿Seguro que querés eliminar a " + nombre + "?")) { 
-                await db.collection("socios").doc(dni).delete(); 
+                try {
+                    await db.collection("socios").doc(dni).delete(); 
+                } catch (e) {
+                    console.error("Error al eliminar:", e);
+                }
             }
         }
     </script>
