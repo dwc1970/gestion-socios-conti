@@ -8,7 +8,34 @@
     <style>
         :root { --oro: #ffd700; --negro: #000000; --blanco: #ffffff; }
         body { background: #f5f7fa; font-family: 'Poppins', sans-serif; margin: 0; }
-        header { background: var(--negro); color: var(--oro); padding: 20px; text-align: center; border-bottom: 5px solid var(--oro); }
+        
+        header { 
+            background: var(--negro); 
+            color: var(--oro); 
+            padding: 15px 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 5px solid var(--oro); 
+        }
+
+        .header-logo-section { display: flex; align-items: center; gap: 15px; }
+        .logo-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--oro); }
+
+        .btn-logout {
+            background: var(--oro);
+            color: var(--negro);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background: #e6c200; }
+
         .user-info { background: var(--negro); color: var(--blanco); padding: 20px; border-radius: 15px; margin: 20px; border: 2px solid var(--oro); }
         .cuotas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
         .month-card { background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 4px solid var(--negro); }
@@ -17,12 +44,22 @@
     </style>
 </head>
 <body>
-    <header><h1>MI PERFIL</h1></header>
+    <header>
+        <div class="header-logo-section">
+            <img src="logo2.png" alt="Escudo Club Constitución" class="logo-img">
+            <h1 style="margin: 0; font-size: 1.5rem;">MI PERFIL</h1>
+        </div>
+        <button class="btn-logout" onclick="cerrarSesion()">
+            <i class="fas fa-sign-out-alt"></i> Salir
+        </button>
+    </header>
+
     <div class="user-info">
-        <h2 id="userName">Cargando...</h2>
+        <h2 id="userName" style="margin-top: 0;">Cargando...</h2>
         <p>DNI: <span id="userDni"></span> | Socio Nº: <span id="userNro"></span></p>
         <p>Categoría: <span id="userCat"></span></p>
     </div>
+
     <h3 style="margin-left: 20px;">ESTADO DE CUOTAS 2026</h3>
     <div class="cuotas-grid" id="cuotasContainer"></div>
 
@@ -30,36 +67,49 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase-config.js"></script>
     <script>
+        function cerrarSesion() {
+            localStorage.removeItem('sesionActiva');
+            window.location.href = 'index.html'; // Cambialo a login.html si preferís
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const dni = localStorage.getItem('sesionActiva');
-            if (!dni) { window.location.href = 'login.html'; return; }
+            if (!dni) { window.location.href = 'index.html'; return; }
 
-            const doc = await db.collection("socios").doc(dni).get();
-            const user = doc.data();
-            document.getElementById('userName').textContent = user.nombre;
-            document.getElementById('userDni').textContent = user.dni;
-            document.getElementById('userNro').textContent = user.nroSocio;
-            document.getElementById('userCat').textContent = user.categoria;
+            try {
+                const doc = await db.collection("socios").doc(dni).get();
+                if (!doc.exists) {
+                    cerrarSesion();
+                    return;
+                }
+                const user = doc.data();
+                document.getElementById('userName').textContent = user.nombre;
+                document.getElementById('userDni').textContent = user.dni;
+                document.getElementById('userNro').textContent = user.nroSocio;
+                document.getElementById('userCat').textContent = user.categoria;
 
-            const pagosSnap = await db.collection("pagos").where("dni", "==", dni).get();
-            const pagados = pagosSnap.docs.map(d => d.data().mes);
+                const pagosSnap = await db.collection("pagos").where("dni", "==", dni).get();
+                const pagados = pagosSnap.docs.map(d => d.data().mes);
 
-            const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            const container = document.getElementById('cuotasContainer');
+                const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                const container = document.getElementById('cuotasContainer');
 
-            meses.forEach(mes => {
-                const estaPago = pagados.includes(mes);
-                const card = document.createElement('div');
-                card.className = 'month-card';
-                card.innerHTML = `
-                    <h4>${mes}</h4>
-                    <span class="status-pill" style="background: ${estaPago ? '#2ecc71' : '#ff4d4d'}">
-                        <i class="fas ${estaPago ? 'fa-check-circle' : 'fa-clock'}"></i> ${estaPago ? 'PAGADO' : 'PENDIENTE'}
-                    </span>
-                    ${estaPago ? '' : `<a href="pagos.html?mes=${mes}" class="btn-pay">PAGAR</a>`}
-                `;
-                container.appendChild(card);
-            });
+                meses.forEach(mes => {
+                    const estaPago = pagados.includes(mes);
+                    const card = document.createElement('div');
+                    card.className = 'month-card';
+                    card.innerHTML = `
+                        <h4>${mes}</h4>
+                        <span class="status-pill" style="background: ${estaPago ? '#2ecc71' : '#ff4d4d'}">
+                            <i class="fas ${estaPago ? 'fa-check-circle' : 'fa-clock'}"></i> ${estaPago ? 'PAGADO' : 'PENDIENTE'}
+                        </span>
+                        ${estaPago ? '' : `<a href="pagos.html?mes=${mes}" class="btn-pay">PAGAR</a>`}
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error al cargar perfil:", error);
+            }
         });
     </script>
 </body>

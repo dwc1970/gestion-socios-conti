@@ -5,43 +5,50 @@
     <title>Admin - Club Constitución</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --negro: #000000; --oro: #ffd700; --gris: #f4f4f4; --verde: #2ecc71; --rojo: #ff4d4d; }
-        body { margin: 0; font-family: sans-serif; background: var(--gris); }
+        :root { --negro: #000000; --oro: #ffd700; --gris: #f4f4f4; --verde: #2ecc71; --rojo: #ff4d4d; --blanco: #ffffff; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--gris); }
         
         header { 
             background: var(--negro); color: var(--oro); 
             padding: 15px; text-align: center; border-bottom: 5px solid var(--oro); 
         }
 
-        /* Estilo para el logo en el Admin */
         .admin-logo {
-            width: 80px; height: 80px;
+            width: 70px; height: 70px;
             border-radius: 50%;
             border: 3px solid var(--oro);
             margin-bottom: 10px;
         }
 
-        .stats-container { display: flex; justify-content: space-around; padding: 20px; }
+        .stats-container { display: flex; justify-content: center; gap: 20px; padding: 20px; }
         .stat-card { 
             background: var(--negro); color: var(--oro); 
-            padding: 20px; border-radius: 10px; width: 40%; 
-            text-align: center; border: 2px solid var(--oro); 
+            padding: 15px 30px; border-radius: 12px;
+            text-align: center; border: 2px solid var(--oro);
+            min-width: 200px;
         }
 
-        .tabla-container { padding: 20px; overflow-x: auto; }
+        /* Controles de Búsqueda */
+        .controls { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; gap: 10px; }
+        .search-input { 
+            flex-grow: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .tabla-container { padding: 20px; max-width: 1100px; margin: 0 auto; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        th { background: var(--negro); color: var(--oro); padding: 12px; }
-        td { padding: 10px; border-bottom: 1px solid #ddd; text-align: center; }
+        th { background: var(--negro); color: var(--oro); padding: 15px; text-transform: uppercase; font-size: 0.85rem; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
         
-        .status-badge { padding: 5px 10px; border-radius: 15px; color: white; font-size: 0.8rem; font-weight: bold; }
+        .status-badge { padding: 6px 12px; border-radius: 20px; color: white; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         .badge-al-dia { background: var(--verde); }
         .badge-debe { background: var(--rojo); }
         
-        .btn-borrar { 
-            background: var(--rojo); color: white; border: none; 
-            padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: 0.3s;
-        }
+        .btn-accion { border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; margin: 2px; color: white; }
+        .btn-borrar { background: var(--rojo); }
         .btn-borrar:hover { background: #cc0000; }
+        .btn-update { background: #3498db; }
+        .btn-update:hover { background: #2980b9; }
 
         .btn-volver {
             display: inline-block; margin-top: 10px; color: var(--oro);
@@ -53,14 +60,18 @@
     <header>
         <img src="logo2.png" alt="Logo" class="admin-logo"><br>
         <h1>ADMINISTRACIÓN CONSTITUCIÓN</h1>
-        <a href="index.html" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver al Registro</a>
+        <a href="index.html" class="btn-volver"><i class="fas fa-arrow-left"></i> Ir al Inicio</a>
     </header>
 
     <div class="stats-container">
         <div class="stat-card">
-            <h3>SOCIOS REGISTRADOS</h3>
-            <h2 id="totalSocios">0</h2>
+            <h3 style="margin:0; font-size: 0.9rem;">SOCIOS TOTALES</h3>
+            <h2 id="totalSocios" style="margin:5px 0 0 0; font-size: 2rem;">0</h2>
         </div>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="buscador" class="search-input" placeholder="🔍 Buscar por DNI, Nombre o N° Socio..." onkeyup="filtrarTabla()">
     </div>
 
     <div class="tabla-container">
@@ -71,12 +82,11 @@
                     <th>NOMBRE</th>
                     <th>DNI</th>
                     <th>CATEGORÍA</th>
-                    <th>ESTADO CUOTA</th>
+                    <th>ESTADO</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
-            <tbody id="tablaSocios">
-                </tbody>
+            <tbody id="tablaSocios"></tbody>
         </table>
     </div>
 
@@ -85,14 +95,13 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        // Función para leer los socios de Firebase
-        async function cargarSocios() {
+        // Carga de Socios con escucha en tiempo real
+        function cargarSocios() {
             const table = document.getElementById('tablaSocios');
-            table.innerHTML = "<tr><td colspan='6'>Cargando socios...</td></tr>";
             
-            try {
-                const snap = await db.collection("socios").get();
-                table.innerHTML = ""; // Limpiamos el mensaje de carga
+            // Usamos onSnapshot para que si alguien paga, la lista se actualice sola sin recargar
+            db.collection("socios").orderBy("nroSocio", "asc").onSnapshot((snap) => {
+                table.innerHTML = ""; 
                 let cant = 0;
 
                 snap.forEach(doc => {
@@ -110,33 +119,56 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')">
-                                    <i class="fas fa-trash"></i> Borrar
+                                <button class="btn-accion btn-update" onclick="cambiarEstado('${s.dni}', '${s.estadoCuota}')" title="Cambiar Estado">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-accion btn-borrar" onclick="eliminar('${s.dni}', '${s.nombre}')" title="Eliminar Socio">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>`;
                 });
                 document.getElementById('totalSocios').innerText = cant;
-            } catch (error) {
-                console.error("Error al cargar:", error);
-                table.innerHTML = "<tr><td colspan='6'>Error al conectar con la base de datos</td></tr>";
+            }, (error) => {
+                console.error("Error:", error);
+                table.innerHTML = "<tr><td colspan='6'>Error de conexión</td></tr>";
+            });
+        }
+
+        // Función para filtrar mientras escribís
+        function filtrarTabla() {
+            const busqueda = document.getElementById('buscador').value.toLowerCase();
+            const filas = document.getElementById('tablaSocios').getElementsByTagName('tr');
+
+            for (let i = 0; i < filas.length; i++) {
+                const textoFila = filas[i].textContent.toLowerCase();
+                filas[i].style.display = textoFila.includes(busqueda) ? "" : "none";
             }
         }
 
-        // Función para eliminar un socio
+        // Cambiar estado manualmente (Útil para el Admin)
+        async function cambiarEstado(dni, estadoActual) {
+            const nuevoEstado = estadoActual === 'Al día' ? 'Con deuda' : 'Al día';
+            try {
+                await db.collection("socios").doc(dni).update({
+                    estadoCuota: nuevoEstado
+                });
+            } catch (error) {
+                alert("Error al actualizar estado");
+            }
+        }
+
         async function eliminar(dni, nombre) {
-            if(confirm("¿Estás seguro de que querés eliminar al socio " + nombre + "?")) { 
+            if(confirm("¿Seguro que querés eliminar permanentemente a " + nombre + "?")) { 
                 try {
                     await db.collection("socios").doc(dni).delete(); 
-                    alert("Socio eliminado correctamente");
-                    cargarSocios(); // Recargamos la lista
+                    alert("Socio eliminado");
                 } catch (error) {
-                    alert("No se pudo eliminar al socio");
+                    alert("Error al eliminar");
                 }
             }
         }
 
-        // Ejecutar al abrir la página
         window.onload = cargarSocios;
     </script>
 </body>
